@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOCS & HELP | V-R-CRAFT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="antialiased font-sans transition-colors duration-300 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-mono">
+
+    <nav class="fixed top-0 w-full p-4 flex justify-between items-center z-[100] bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
+        <div class="font-black text-2xl tracking-[0.15em] px-4 text-slate-900 dark:text-white uppercase italic">V-R-CRAFT</div>
+        <div class="hidden md:flex gap-6 text-[10px] font-bold tracking-[0.2em] text-slate-500 dark:text-slate-300 uppercase">
+            <a href="index.html" class="hover:text-green-500 transition">HOME</a>
+            <a href="download.html" class="hover:text-green-500 transition">DOWNLOAD</a>
+            <a href="assistant.html" class="hover:text-green-500 transition">ASSISTANT</a>
+            <a href="help.html" class="hover:text-green-500 transition">HELP</a>
+            <a href="other_accounts.html" class="hover:text-green-500 transition">SOCIAL</a>
+            <a href="disocrd.html" class="hover:text-blue-500 transition">DISCORD</a>
+        </div>
+        <button id="dark-mode-toggle" class="bg-slate-200 dark:bg-slate-700 p-2 px-4 rounded-full shadow-sm hover:scale-105 transition">
+            <span class="dark-hidden">🌙</span>
+            <span class="dark-show text-yellow-400">☀️</span>
+        </button>
+    </nav>
+
+    <main class="min-h-screen pt-32 pb-20 px-6 max-w-5xl mx-auto font-sans">
+        <header class="mb-16 border-l-4 border-green-600 pl-8">
+            <h1 class="text-4xl md:text-6xl font-black mb-4 tracking-tighter uppercase">Knowledge<br>Base</h1>
+            <p class="text-slate-500 dark:text-slate-400 font-medium">
+                V-R-Craft製品の導入方法、トラブルシューティング、および技術仕様。
+            </p>
+        </header>
+
+        <div class="mb-20 p-8 rounded-[2rem] bg-gradient-to-br from-green-600 to-emerald-800 text-white shadow-2xl relative overflow-hidden group">
+            <div class="absolute right-[-20px] bottom-[-20px] text-[15rem] opacity-10 pointer-events-none group-hover:rotate-12 transition-transform duration-700">?</div>
+            <div class="relative z-10">
+                <h2 class="text-2xl font-black mb-4 uppercase italic tracking-widest">困ったらAIに相談</h2>
+                <p class="text-green-100 mb-8 max-w-lg text-sm leading-relaxed">
+                    最新の Gemini 2.5 Flash を搭載した専用アシスタントが、あなたの質問にリアルタイムで回答します。導入エラーやスクリプトの不明点はこちらへ。
+                </p>
+                <a href="assistant.html" class="inline-block px-8 py-4 bg-white text-green-800 rounded-xl font-black text-sm hover:bg-slate-100 transition-all uppercase tracking-widest">
+                    Launch Assistant
+                </a>
+            </div>
+        </div>
+
+        <div class="space-y-12">
+            <h2 class="text-xs font-black tracking-[0.5em] text-slate-400 uppercase border-b border-slate-200 dark:border-slate-800 pb-4">Frequently Asked Questions</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div>
+                    <h3 class="text-lg font-black mb-3 text-green-600 dark:text-green-400 font-mono">#01 如何にしてアドオンを導入するか?</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                        ダウンロードした `.mcaddon` または `.mcpack` ファイルをダブルクリック（または実行）すると、Minecraftが自動的に起動しインポートが開始されます。
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-black mb-3 text-green-600 dark:text-green-400 font-mono">#02 Script APIが動作しない場合は?</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                        ワールド設定の「実験」タブにある「ベータ API (Beta APIs)」がオンになっているか確認してください。これがオフだとスクリプトは読み込まれません。
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-black mb-3 text-green-600 dark:text-green-400 font-mono">#03 3Dモデルが表示されない?</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                        リソースパックが行動パック（ビヘイビア）よりも上位に配置されているか確認してください。また、デバイスのメモリ不足によりモデルがスキップされる場合があります。
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-black mb-3 text-green-600 dark:text-green-400 font-mono">#04 二次配布は可能ですか?</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                        V-R-Craftの全ての成果物は、クレジットの有無に関わらず無断での二次配布を禁止しています。紹介の際は当サイトのリンクを共有してください。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-20 text-center text-[10px] font-black text-slate-400 tracking-[0.4em] uppercase border-t border-slate-100 dark:border-slate-900">
+        System documentation version // 2.5.0-STABLE
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

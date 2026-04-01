@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V-R-CRAFT | Portal Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="antialiased font-sans transition-colors duration-300 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+
+    <nav class="fixed top-0 w-full p-4 flex justify-between items-center z-[100] bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
+        <div class="font-black text-2xl tracking-[0.15em] px-4 text-slate-900 dark:text-white uppercase italic">V-R-CRAFT</div>
+        <div class="hidden md:flex gap-6 text-[10px] font-bold tracking-[0.2em] text-slate-500 dark:text-slate-300 uppercase">
+            <a href="index.html" class="hover:text-green-500 transition">HOME</a>
+            <a href="download.html" class="hover:text-green-500 transition">DOWNLOAD</a>
+            <a href="assistant.html" class="hover:text-green-500 transition">ASSISTANT</a>
+            <a href="help.html" class="hover:text-green-500 transition">HELP</a>
+            <a href="other_accounts.html" class="hover:text-green-500 transition">SOCIAL</a>
+            <a href="disocrd.html" class="hover:text-blue-500 transition">DISCORD</a>
+        </div>
+        <button id="dark-mode-toggle" class="bg-slate-200 dark:bg-slate-700 p-2 px-4 rounded-full shadow-sm hover:scale-105 transition">
+            <span class="dark-hidden">🌙</span>
+            <span class="dark-show text-yellow-400">☀️</span>
+        </button>
+    </nav>
+
+    <header class="min-h-screen flex flex-col items-center justify-center text-center px-4 pt-20 bg-slate-50 dark:bg-slate-900 transition-colors relative overflow-hidden">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-green-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+        
+        <div class="mb-6 text-green-600 font-bold tracking-[0.5em] uppercase text-[11px] animate-pulse">Developer Archive</div>
+        
+        <h1 class="text-7xl md:text-[10rem] font-black mb-6 tracking-tighter uppercase leading-none select-none">
+            V-R-<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-green-500 via-emerald-500 to-teal-600">CRAFT</span>
+        </h1>
+        
+        <p class="text-base md:text-xl text-slate-500 dark:text-slate-400 mb-12 max-w-2xl leading-relaxed font-light tracking-wide">
+            Voxel（マイクラ）を核とし、高度なScript APIとAIを融合。<br>
+            次世代のアドオン開発を追求する「V-R-Craft」公式ポータル。
+        </p>
+
+        <div class="flex flex-wrap justify-center gap-6">
+            <a href="download.html" class="group relative px-12 py-5 bg-slate-900 dark:bg-white text-white dark:text-slate-950 rounded-2xl font-black text-xl shadow-2xl hover:scale-105 transition-all duration-300 overflow-hidden">
+                <span class="relative z-10">VIEW ADDONS</span>
+                <div class="absolute inset-0 bg-green-500 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+            </a>
+            <a href="assistant.html" class="px-12 py-5 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl font-black text-xl hover:border-green-500 transition-all duration-300">
+                AI ASSISTANT
+            </a>
+        </div>
+    </header>
+
+    <section class="py-20 px-8 max-w-7xl mx-auto">
+        <div id="featured-addon" class="mb-24">
+            <div class="text-amber-500 font-bold tracking-[0.4em] uppercase text-[10px] mb-4">🏆 Most Downloaded</div>
+            <div id="most-downloaded-container"></div>
+        </div>
+
+        <div class="flex justify-between items-end mb-10">
+            <div>
+                <div class="text-green-600 font-bold tracking-[0.4em] uppercase text-[10px] mb-2">Update Log</div>
+                <h2 class="text-4xl font-black italic uppercase tracking-tighter">New Arrivals</h2>
+            </div>
+            <a href="download.html" class="text-[10px] font-bold tracking-[0.2em] hover:text-green-500 transition border-b border-slate-300 pb-1">VIEW ALL ARTIFACTS →</a>
+        </div>
+
+        <div id="latest-addons-grid" class="grid grid-cols-1 md:grid-cols-2 gap-10"></div>
+    </section>
+
+    <section class="py-16 bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-900 text-center">
+        <div class="flex flex-wrap justify-center gap-12 text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase">
+            <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span> Script API</div>
+            <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span> Gemini 2.5 Integration</div>
+            <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span> 3D Modeling</div>
+        </div>
+    </section>
+
+    <footer class="py-10 text-center text-[10px] font-bold text-slate-500 dark:text-slate-600 tracking-[0.5em] uppercase">
+        &copy; 2026 V-R-CRAFT LABORATORY. ALL RIGHTS RESERVED.
+    </footer>
+
+    <script>
+        const addonData = [
+            {
+                id: "gun-v4",
+                title: "TACTICAL 3D GUN V4",
+                description: "RX 6600のパワーを想定した高負荷・高精度な弾道計算システム。ヘッドショット判定実装済み。",
+                image: "assets/image/gun_v4.png",
+                downloads: 12500,
+                isNew: true
+            },
+            {
+                id: "thunder-sword",
+                title: "THUNDER SWORD",
+                description: "Script APIによる雷撃召喚。座標 Y: -67 への精密な落雷を実現。",
+                image: "assets/image/thunder.png",
+                downloads: 8400,
+                isNew: true
+            },
+            {
+                id: "zombie-army",
+                title: "ZOMBIE ARMY WEB",
+                description: "友人と共同開発したゾンビアーミーの公式サイト。漫画試読システム搭載。",
+                image: "assets/image/zombie.png",
+                downloads: 3200,
+                isNew: false
+            }
+        ];
+
+        function renderIndex() {
+            const mostDownloaded = [...addonData].sort((a, b) => b.downloads - a.downloads)[0];
+            const featuredContainer = document.getElementById('most-downloaded-container');
+            featuredContainer.innerHTML = `
+                <div class="relative group overflow-hidden rounded-[3rem] bg-slate-900 aspect-[21/9] flex items-center">
+                    <img src="${mostDownloaded.image}" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition duration-700">
+                    <div class="relative p-12 md:p-20 w-full">
+                        <h3 class="text-5xl md:text-7xl font-black text-white italic uppercase mb-6 leading-none">${mostDownloaded.title}</h3>
+                        <p class="text-slate-300 max-w-xl mb-10 font-medium">${mostDownloaded.description}</p>
+                        <div class="flex items-center gap-6">
+                            <a href="download.html?id=${mostDownloaded.id}" class="bg-white text-slate-900 px-10 py-4 rounded-full font-black hover:bg-green-500 hover:text-white transition">GET ARTIFACT</a>
+                            <span class="text-white/50 font-mono text-sm">${mostDownloaded.downloads.toLocaleString()} DOWNLOADS</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const latestAddons = addonData.filter(a => a.isNew).slice(0, 2);
+            const grid = document.getElementById('latest-addons-grid');
+            grid.innerHTML = latestAddons.map(item => `
+                <div class="group cursor-pointer" onclick="location.href='download.html'">
+                    <div class="overflow-hidden rounded-[2rem] mb-6 bg-slate-100 dark:bg-slate-800">
+                        <img src="${item.image}" class="w-full h-64 object-cover group-hover:scale-110 transition duration-500">
+                    </div>
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="text-2xl font-black italic uppercase">${item.title}</h4>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">${item.description.substring(0, 60)}...</p>
+                        </div>
+                        <span class="bg-green-100 text-green-700 text-[8px] font-black px-3 py-1 rounded-full uppercase">NEW</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        renderIndex();
+    </script>
+
+    <script src="script.js"></script>
+</body>
+</html>

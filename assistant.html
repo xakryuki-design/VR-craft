@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI ASSISTANT | V-R-CRAFT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s; }
+
+        /* チャットエリア */
+        #chat-display { max-width: 850px; margin: 40px auto; display: flex; flex-direction: column; gap: 20px; padding: 0 20px 220px 20px; }
+        .message { padding: 1.2rem 1.6rem; border-radius: 1.5rem; max-width: 85%; font-weight: 500; animation: pop 0.3s ease-out; line-height: 1.6; word-wrap: break-word; white-space: pre-wrap; }
+        @keyframes pop { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .user-message { align-self: flex-end; background: #f8fafc; border: 1px solid #e2e8f0; color: #0f172a; }
+        .ai-message { align-self: flex-start; background: white; border: 2px solid #3b82f6; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1); color: #0f172a; }
+        .dark .user-message { background: #1e293b; border-color: #334155; color: #f1f5f9; }
+        .dark .ai-message { background: #0f172a; border-color: #3b82f6; color: #f1f5f9; }
+
+        /* 入力エリア */
+        .input-area { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 1.5rem; border-top: 1px solid #f1f5f9; z-index: 50; }
+        .dark .input-area { background: #0f172a; border-color: #1e293b; }
+        .input-box { max-width: 850px; margin: 0 auto; display: flex; gap: 12px; }
+        input { flex: 1; padding: 0.8rem 1.5rem; border-radius: 999px; border: 2px solid #e2e8f0; outline: none; }
+        .dark input { background: #1e293b; border-color: #334155; color: white; }
+        
+        button { background: #0f172a; color: white; padding: 0 2rem; border-radius: 999px; font-weight: 900; transition: 0.2s; }
+        .dark button { background: white; color: #0f172a; }
+        button:hover { background: #3b82f6; color: white; transform: scale(1.05); }
+
+        /* ステータスバー */
+        .admin-footer { max-width: 850px; margin: 12px auto 0; display: flex; justify-content: space-between; align-items: center; font-size: 10px; font-weight: bold; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
+        select { background: transparent; border: 1px solid #e2e8f0; border-radius: 4px; padding: 2px 4px; outline: none; }
+        .dark select { border-color: #334155; }
+    </style>
+</head>
+<body class="antialiased bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+
+    <nav class="fixed top-0 w-full p-4 flex justify-between items-center z-[100] bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
+        <div class="font-black text-2xl tracking-[0.15em] px-4 text-slate-900 dark:text-white uppercase italic">V-R-CRAFT</div>
+        <div class="hidden md:flex gap-6 text-[10px] font-bold tracking-[0.2em] text-slate-500 dark:text-slate-300 uppercase">
+            <a href="index.html" class="hover:text-green-500 transition">HOME</a>
+            <a href="download.html" class="hover:text-green-500 transition">DOWNLOAD</a>
+            <a href="assistant.html" class="hover:text-green-500 transition">ASSISTANT</a>
+            <a href="help.html" class="hover:text-green-500 transition">HELP</a>
+            <a href="other_accounts.html" class="hover:text-green-500 transition">SOCIAL</a>
+            <a href="disocrd.html" class="hover:text-blue-500 transition">DISCORD</a>
+        </div>
+        <button id="dark-mode-toggle" class="bg-slate-200 dark:bg-slate-700 p-2 px-4 rounded-full shadow-sm hover:scale-105 transition">
+            <span class="dark-hidden">🌙</span>
+            <span class="dark-show text-yellow-400">☀️</span>
+        </button>
+    </nav>
+
+    <main class="pt-32">
+        <div id="chat-display">
+            <div class="message ai-message">こんにちは、ネオさん。ローカルAI（LM Studio）またはクラウド（Gemini）を選択して会話を開始できます。</div>
+        </div>
+
+        <div class="input-area">
+            <div class="input-box">
+                <input type="text" id="user-input" placeholder="メッセージを入力..." onkeypress="if(event.key==='Enter') handleSend()">
+                <button id="send-btn" onclick="handleSend()">Send</button>
+            </div>
+            <div class="admin-footer">
+                <div>
+                    MODE: 
+                    <select id="mode-select">
+                        <option value="local">Local (LM Studio)</option>
+                        <option value="gemini">Cloud (Gemini 3 Flash)</option>
+                    </select>
+                </div>
+                <div class="flex gap-4">
+                    <span class="cursor-pointer hover:text-blue-500" onclick="resetKey()">Set API Key</span>
+                    <span id="connection-status">● LOCAL READY</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        const LOCAL_URL = "http://localhost:1020/v1/chat/completions";
+        const CLOUD_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash:generateContent";
+
+        function resetKey() {
+            const key = prompt("Gemini APIキーを入力してください");
+            if (key) localStorage.setItem("GEMINI_KEY", key);
+        }
+
+        async function handleSend() {
+            const input = document.getElementById('user-input');
+            const btn = document.getElementById('send-btn');
+            const mode = document.getElementById('mode-select').value;
+            const userText = input.value.trim();
+
+            if (!userText || btn.disabled) return;
+
+            btn.disabled = true;
+            addMessage(userText, 'user-message');
+            input.value = "";
+            const aiLoading = addMessage("Thinking...", 'ai-message');
+
+            try {
+                if (mode === "local") {
+                    // --- LM Studio への接続 ---
+                    const res = await fetch(LOCAL_URL, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            messages: [{ role: "user", content: userText }],
+                            temperature: 0.7,
+                            max_tokens: 800
+                        })
+                    });
+                    const data = await res.json();
+                    aiLoading.textContent = data.choices[0].message.content;
+                } else {
+                    // --- Gemini への接続 ---
+                    const apiKey = localStorage.getItem("GEMINI_KEY");
+                    if (!apiKey) throw new Error("APIキーが設定されていません。");
+                    
+                    const res = await fetch(`${CLOUD_URL}?key=${apiKey}`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: userText }] }],
+                            generationConfig: { maxOutputTokens: 800 }
+                        })
+                    });
+                    const data = await res.json();
+                    if (data.error) throw new Error(data.error.message);
+                    aiLoading.textContent = data.candidates[0].content.parts[0].text;
+                }
+            } catch (err) {
+                aiLoading.textContent = "Error: " + err.message + "\n(ローカルモードの場合、LM StudioのServerが起動しているか確認してください)";
+            } finally {
+                btn.disabled = false;
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }
+        }
+
+        function addMessage(text, className) {
+            const display = document.getElementById('chat-display');
+            const div = document.createElement('div');
+            div.className = `message ${className}`;
+            div.textContent = text;
+            display.appendChild(div);
+            return div;
+        }
+    </script>
+</body>
+</html>

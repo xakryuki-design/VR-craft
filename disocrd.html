@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMMUNITY | V-R-CRAFT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="antialiased font-sans transition-colors duration-300 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-mono">
+
+    <nav class="fixed top-0 w-full p-4 flex justify-between items-center z-[100] bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
+        <div class="font-black text-2xl tracking-[0.15em] px-4 text-slate-900 dark:text-white uppercase italic">V-R-CRAFT</div>
+        <div class="hidden md:flex gap-6 text-[10px] font-bold tracking-[0.2em] text-slate-500 dark:text-slate-300 uppercase">
+            <a href="index.html" class="hover:text-green-500 transition">HOME</a>
+            <a href="download.html" class="hover:text-green-500 transition">DOWNLOAD</a>
+            <a href="assistant.html" class="hover:text-green-500 transition">ASSISTANT</a>
+            <a href="help.html" class="hover:text-green-500 transition">HELP</a>
+            <a href="other_accounts.html" class="hover:text-green-500 transition">SOCIAL</a>
+            <a href="disocrd.html" class="hover:text-blue-500 transition">DISCORD</a>
+        </div>
+        <button id="dark-mode-toggle" class="bg-slate-200 dark:bg-slate-700 p-2 px-4 rounded-full shadow-sm hover:scale-105 transition">
+            <span class="dark-hidden">🌙</span>
+            <span class="dark-show text-yellow-400">☀️</span>
+        </button>
+    </nav>
+
+    <main class="min-h-screen pt-32 pb-20 px-6 flex flex-col items-center justify-center text-center">
+        
+        <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-64 h-64 bg-green-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <header class="relative z-10 mb-12">
+            <div class="inline-block px-4 py-1 mb-6 border border-blue-500 text-blue-500 text-[10px] font-black tracking-[0.5em] uppercase rounded-full animate-pulse">
+                Encrypted Connection
+            </div>
+            <h1 class="text-5xl md:text-8xl font-black mb-6 tracking-tighter uppercase leading-none">
+                Join the<br><span class="text-blue-500">Network</span>
+            </h1>
+            <p class="text-slate-500 dark:text-slate-400 max-w-lg mx-auto font-sans leading-relaxed">
+                V-R-CRAFTの公式Discordサーバー。最新アップデートの先行公開、バグ報告、開発者ネオへの直接的なフィードバックが可能です。
+            </p>
+        </header>
+
+        <div class="relative group max-w-md w-full">
+            <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-green-500 rounded-[2.5rem] blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
+            
+            <div class="relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-10 rounded-[2.5rem] shadow-2xl">
+                <div class="w-20 h-20 bg-blue-600 text-white rounded-[1.5rem] flex items-center justify-center mx-auto mb-8 shadow-xl shadow-blue-500/20 group-hover:scale-110 transition-transform duration-500">
+                    <svg class="w-12 h-12 fill-current" viewBox="0 0 127.14 96.36">
+                        <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.71,32.65-1.82,56.6.48,80.05a105.73,105.73,0,0,0,32.22,16.15,77.7,77.7,0,0,0,7.34-11.86,68.11,68.11,0,0,1-11.85-5.65c.94-.67,1.85-1.39,2.72-2.14a75.31,75.31,0,0,0,65.21,0c.87.75,1.78,1.47,2.72,2.14a67.8,67.8,0,0,1-11.86,5.65,77.91,77.91,0,0,0,7.34,11.86,105.53,105.53,0,0,0,32.22-16.15C129.28,50.77,124.62,27,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5.07-12.72,11.41-12.72S54,46,54,53,48.81,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5.07-12.72,11.44-12.72S96.16,46,96.16,53,91,65.69,84.69,65.69Z"/>
+                    </svg>
+                </div>
+
+                <h2 class="text-2xl font-black mb-2 uppercase tracking-tight">V-R-CRAFT // SERVER</h2>
+                <p class="text-[10px] text-slate-400 mb-8 tracking-[0.3em] font-bold uppercase">Authorized Access Only</p>
+
+                <a href="https://discord.gg/YOUR_INVITE_LINK" target="_blank" class="block w-full py-5 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-2xl shadow-lg shadow-blue-500/30 transition-all uppercase tracking-widest text-sm">
+                    Connect Now
+                </a>
+            </div>
+        </div>
+
+        <div class="mt-16 flex justify-center gap-10 opacity-30 text-[9px] font-black tracking-[0.4em] uppercase">
+            <span>Voice Nodes: Active</span>
+            <span>Support: 24/7</span>
+            <span>Files: Secure</span>
+        </div>
+    </main>
+
+    <footer class="py-10 text-center text-[10px] font-black text-slate-500 tracking-[0.5em] uppercase">
+        External Community Link // Protocol: Discord
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

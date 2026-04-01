@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMIN DASHBOARD | V-R-CRAFT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); }
+        input, textarea, select { border: 1px solid #1e293b !important; }
+        input:focus { border-color: #16a34a !important; box-shadow: 0 0 15px rgba(22, 163, 74, 0.2); }
+    </style>
+</head>
+<body class="antialiased bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen p-6 md:p-12">
+
+    <nav class="fixed top-0 w-full p-4 flex justify-between items-center z-[100] bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
+        <div class="font-black text-2xl tracking-[0.15em] px-4 text-slate-900 dark:text-white uppercase italic">V-R-CRAFT</div>
+        <div class="hidden md:flex gap-6 text-[10px] font-bold tracking-[0.2em] text-slate-500 dark:text-slate-300 uppercase">
+            <a href="index.html" class="hover:text-green-500 transition">HOME</a>
+            <a href="download.html" class="hover:text-green-500 transition">DOWNLOAD</a>
+            <a href="assistant.html" class="hover:text-green-500 transition">ASSISTANT</a>
+            <a href="help.html" class="hover:text-green-500 transition">HELP</a>
+            <a href="other_accounts.html" class="hover:text-green-500 transition">SOCIAL</a>
+            <a href="disocrd.html" class="hover:text-blue-500 transition">DISCORD</a>
+        </div>
+        <button id="dark-mode-toggle" class="bg-slate-200 dark:bg-slate-700 p-2 px-4 rounded-full shadow-sm hover:scale-105 transition">
+            <span class="dark-hidden">🌙</span>
+            <span class="dark-show text-yellow-400">☀️</span>
+        </button>
+    </nav>
+
+    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
+        
+        <section class="space-y-8 animate-fade-in">
+            <header>
+                <div class="inline-block px-3 py-1 mb-4 border border-green-500 text-green-500 text-[10px] font-black tracking-[0.4em] uppercase rounded-full">System Administrator</div>
+                <h1 class="text-4xl font-black tracking-tighter uppercase italic">Registry <span class="text-green-600">Entry</span></h1>
+            </header>
+
+            <div class="glass p-8 rounded-[2rem] border border-slate-800 space-y-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Addon ID (Auto)</label>
+                        <input type="text" id="id" class="w-full p-4 bg-slate-900/50 rounded-xl outline-none font-mono text-green-500" readonly>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Version</label>
+                        <input type="text" id="version" placeholder="v1.0.0" class="w-full p-4 bg-slate-900/50 rounded-xl outline-none">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Project Title</label>
+                    <input type="text" id="title" placeholder="Ultimate Gun Addon" class="w-full p-4 bg-slate-900/50 rounded-xl outline-none text-xl font-bold">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Category</label>
+                        <select id="category" class="w-full p-4 bg-slate-900/50 rounded-xl outline-none appearance-none">
+                            <option value="Weapon">Weapon</option>
+                            <option value="System">System</option>
+                            <option value="Entity">Entity</option>
+                            <option value="Utility">Utility</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Image Path</label>
+                        <input type="text" id="image" value="assets/image/スクリーンショット.png" class="w-full p-4 bg-slate-900/50 rounded-xl outline-none font-mono text-sm">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Download Link</label>
+                    <input type="text" id="file" placeholder="downloads/file.mcaddon" class="w-full p-4 bg-slate-900/50 rounded-xl outline-none font-mono text-sm">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Detailed Description</label>
+                    <textarea id="desc" rows="4" placeholder="アドオンの詳細な説明を入力してください..." class="w-full p-4 bg-slate-900/50 rounded-xl outline-none resize-none"></textarea>
+                </div>
+
+                <button onclick="generateData()" class="w-full py-5 bg-green-600 hover:bg-green-500 text-white font-black rounded-2xl shadow-lg shadow-green-500/20 transition-all uppercase tracking-[0.2em] active:scale-95">
+                    Generate Data Object
+                </button>
+            </div>
+        </section>
+
+        <section class="lg:sticky lg:top-12 h-fit space-y-8">
+            <header>
+                <h2 class="text-[10px] font-black tracking-[0.5em] text-slate-500 uppercase mt-4">Raw Data Output</h2>
+            </header>
+
+            <div class="relative group">
+                <div class="absolute -inset-1 bg-gradient-to-r from-green-600 to-emerald-900 rounded-3xl blur opacity-20 group-hover:opacity-40 transition"></div>
+                <div class="relative glass p-6 rounded-3xl border border-slate-800">
+                    <pre id="output" class="text-[12px] text-green-400 font-mono overflow-x-auto whitespace-pre-wrap leading-relaxed h-[400px] overflow-y-auto">
+// 入力してボタンを押すと
+// ここにJSONデータが生成されます
+                    </pre>
+                    <button id="copy-btn" onclick="copyToClipboard()" class="absolute top-4 right-4 bg-slate-800 hover:bg-slate-700 text-[9px] font-black px-4 py-2 rounded-lg transition uppercase tracking-widest opacity-0 group-hover:opacity-100">
+                        Copy Code
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-6 rounded-2xl bg-blue-900/10 border border-blue-500/20">
+                <p class="text-[10px] text-blue-400 font-bold uppercase tracking-widest mb-2 italic">How to Deploy:</p>
+                <ol class="text-[11px] text-slate-400 space-y-1 list-decimal list-inside">
+                    <li>情報を入力して "Generate" をクリック。</li>
+                    <li>右上の "Copy Code" をクリック。</li>
+                    <li><span class="text-green-500">data.js</span> の配列内にペーストして保存。</li>
+                </ol>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // 初期化：ランダムIDの生成
+        function refreshId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = 'VR-';
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('id').value = result;
+        }
+
+        window.onload = refreshId;
+
+        function generateData() {
+            const data = {
+                id: document.getElementById('id').value,
+                title: document.getElementById('title').value || "No Title",
+                version: document.getElementById('version').value || "v1.0.0",
+                category: document.getElementById('category').value,
+                image: document.getElementById('image').value,
+                file: document.getElementById('file').value,
+                description: document.getElementById('desc').value,
+                timestamp: new Date().toISOString().split('T')[0]
+            };
+
+            const jsonStr = JSON.stringify(data, null, 4) + ",";
+            document.getElementById('output').innerText = jsonStr;
+            document.getElementById('copy-btn').classList.remove('hidden');
+        }
+
+        async function copyToClipboard() {
+            const text = document.getElementById('output').innerText;
+            await navigator.clipboard.writeText(text);
+            const btn = document.getElementById('copy-btn');
+            btn.innerText = "COPIED!";
+            setTimeout(() => { btn.innerText = "COPY CODE"; }, 2000);
+        }
+    </script>
+</body>
+</html>

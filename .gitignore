@@ -1,0 +1,25 @@
+# --- Environment ---
+.env
+.env.local
+.env.*.local
+
+# --- Build & Dependency ---
+node_modules/
+dist/
+build/
+*.log
+
+# --- Visual Studio ---
+.vs/
+*.user
+*.userosscache
+*.sln.docattachments
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- Gemini CLI ---
+.gemini/
+plans/
+tmp/

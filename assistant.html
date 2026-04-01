@@ -7,75 +7,143 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s; }
-
         /* チャットエリア */
-        #chat-display { max-width: 850px; margin: 40px auto; display: flex; flex-direction: column; gap: 20px; padding: 0 20px 220px 20px; }
-        .message { padding: 1.2rem 1.6rem; border-radius: 1.5rem; max-width: 85%; font-weight: 500; animation: pop 0.3s ease-out; line-height: 1.6; word-wrap: break-word; white-space: pre-wrap; }
-        @keyframes pop { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #chat-display { max-width: 900px; margin: 40px auto; display: flex; flex-direction: column; gap: 24px; padding: 0 20px 240px 20px; }
         
-        .user-message { align-self: flex-end; background: #f8fafc; border: 1px solid #e2e8f0; color: #0f172a; }
-        .ai-message { align-self: flex-start; background: white; border: 2px solid #3b82f6; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1); color: #0f172a; }
-        .dark .user-message { background: #1e293b; border-color: #334155; color: #f1f5f9; }
-        .dark .ai-message { background: #0f172a; border-color: #3b82f6; color: #f1f5f9; }
+        .message { 
+            padding: 1.25rem 1.75rem; 
+            border-radius: 1.75rem; 
+            max-width: 85%; 
+            font-weight: 500; 
+            animation: message-pop 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+            line-height: 1.6; 
+            word-wrap: break-word; 
+            white-space: pre-wrap;
+            position: relative;
+        }
+
+        @keyframes message-pop { 
+            from { opacity: 0; transform: translateY(20px) scale(0.95); } 
+            to { opacity: 1; transform: translateY(0) scale(1); } 
+        }
+        
+        .user-message { 
+            align-self: flex-end; 
+            background: var(--accent); 
+            color: white; 
+            border-bottom-right-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.2);
+        }
+
+        .ai-message { 
+            align-self: flex-start; 
+            background: white; 
+            border: 1px solid #e2e8f0; 
+            color: #0f172a; 
+            border-bottom-left-radius: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .dark .ai-message { 
+            background: #1e293b; 
+            border-color: #334155; 
+            color: #f1f5f9; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
 
         /* 入力エリア */
-        .input-area { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 1.5rem; border-top: 1px solid #f1f5f9; z-index: 50; }
-        .dark .input-area { background: #0f172a; border-color: #1e293b; }
-        .input-box { max-width: 850px; margin: 0 auto; display: flex; gap: 12px; }
-        input { flex: 1; padding: 0.8rem 1.5rem; border-radius: 999px; border: 2px solid #e2e8f0; outline: none; }
-        .dark input { background: #1e293b; border-color: #334155; color: white; }
+        .input-area { 
+            position: fixed; bottom: 0; left: 0; right: 0; 
+            background: rgba(255, 255, 255, 0.8); 
+            backdrop-filter: blur(20px);
+            padding: 2rem; 
+            border-top: 1px solid #f1f5f9; 
+            z-index: 50; 
+        }
+
+        .dark .input-area { background: rgba(15, 23, 42, 0.8); border-color: #1e293b; }
         
-        button { background: #0f172a; color: white; padding: 0 2rem; border-radius: 999px; font-weight: 900; transition: 0.2s; }
-        .dark button { background: white; color: #0f172a; }
-        button:hover { background: #3b82f6; color: white; transform: scale(1.05); }
+        .input-box { max-width: 900px; margin: 0 auto; display: flex; gap: 16px; }
+        
+        input { 
+            flex: 1; padding: 1rem 2rem; border-radius: 1.5rem; 
+            border: 2px solid #e2e8f0; outline: none; 
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .dark input { background: #0f172a; border-color: #334155; color: white; }
+        input:focus { border-color: var(--accent); }
+        
+        .send-btn { 
+            background: #0f172a; color: white; padding: 0 2.5rem; 
+            border-radius: 1.5rem; font-weight: 900; transition: all 0.3s;
+            text-transform: uppercase; letter-spacing: 0.1em;
+        }
+
+        .dark .send-btn { background: white; color: #0f172a; }
+        .send-btn:hover { background: var(--accent); color: white; transform: translateY(-2px); shadow: 0 10px 20px rgba(34, 197, 94, 0.3); }
+        .send-btn:disabled { opacity: 0.5; transform: none; cursor: not-allowed; }
 
         /* ステータスバー */
-        .admin-footer { max-width: 850px; margin: 12px auto 0; display: flex; justify-content: space-between; align-items: center; font-size: 10px; font-weight: bold; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
-        select { background: transparent; border: 1px solid #e2e8f0; border-radius: 4px; padding: 2px 4px; outline: none; }
-        .dark select { border-color: #334155; }
+        .status-bar { 
+            max-width: 900px; margin: 16px auto 0; 
+            display: flex; justify-content: space-between; align-items: center; 
+            font-size: 10px; font-weight: 900; color: #94a3b8; 
+            text-transform: uppercase; letter-spacing: 0.1em; 
+        }
+
+        select { 
+            background: #f8fafc; border: 1px solid #e2e8f0; 
+            border-radius: 8px; padding: 4px 12px; outline: none; 
+            cursor: pointer; font-weight: 900;
+        }
+
+        .dark select { background: #1e293b; border-color: #334155; color: #94a3b8; }
     </style>
 </head>
-<body class="antialiased bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+<body class="antialiased bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
 
-    <nav class="fixed top-0 w-full p-4 flex justify-between items-center z-[100] bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
+    <nav class="fixed top-0 w-full p-4 flex justify-between items-center z-[100] transition-all duration-300">
         <div class="font-black text-2xl tracking-[0.15em] px-4 text-slate-900 dark:text-white uppercase italic">V-R-CRAFT</div>
-        <div class="hidden md:flex gap-6 text-[10px] font-bold tracking-[0.2em] text-slate-500 dark:text-slate-300 uppercase">
-            <a href="index.html" class="hover:text-green-500 transition">HOME</a>
-            <a href="download.html" class="hover:text-green-500 transition">DOWNLOAD</a>
-            <a href="assistant.html" class="hover:text-green-500 transition">ASSISTANT</a>
-            <a href="help.html" class="hover:text-green-500 transition">HELP</a>
-            <a href="other_accounts.html" class="hover:text-green-500 transition">SOCIAL</a>
-            <a href="disocrd.html" class="hover:text-blue-500 transition">DISCORD</a>
+        <div class="hidden md:flex gap-8 text-[11px] font-black tracking-[0.2em] text-slate-500 dark:text-slate-300 uppercase">
+            <a href="index.html" class="hover:text-green-500 transition-colors">HOME</a>
+            <a href="download.html" class="hover:text-green-500 transition-colors">DOWNLOAD</a>
+            <a href="assistant.html" class="hover:text-green-500 transition-colors">ASSISTANT</a>
+            <a href="help.html" class="hover:text-green-500 transition-colors">HELP</a>
+            <a href="other_accounts.html" class="hover:text-green-500 transition-colors">SOCIAL</a>
+            <a href="discord.html" class="hover:text-blue-500 transition-colors">DISCORD</a>
         </div>
-        <button id="dark-mode-toggle" class="bg-slate-200 dark:bg-slate-700 p-2 px-4 rounded-full shadow-sm hover:scale-105 transition">
+        <button id="dark-mode-toggle" class="bg-white dark:bg-slate-800 p-2 px-5 rounded-full shadow-sm hover:scale-105 transition-all">
             <span class="dark-hidden">🌙</span>
             <span class="dark-show text-yellow-400">☀️</span>
         </button>
     </nav>
 
-    <main class="pt-32">
+    <main class="pt-32 min-h-screen">
         <div id="chat-display">
-            <div class="message ai-message">こんにちは、ネオさん。ローカルAI（LM Studio）またはクラウド（Gemini）を選択して会話を開始できます。</div>
+            <div class="message ai-message">こんにちは。V-R-CRAFT AI アシスタントです。アドオン開発、Script API、導入方法などについてお手伝いします。</div>
         </div>
 
         <div class="input-area">
             <div class="input-box">
                 <input type="text" id="user-input" placeholder="メッセージを入力..." onkeypress="if(event.key==='Enter') handleSend()">
-                <button id="send-btn" onclick="handleSend()">Send</button>
+                <button id="send-btn" class="send-btn" onclick="handleSend()">Send</button>
             </div>
-            <div class="admin-footer">
-                <div>
-                    MODE: 
+            <div class="status-bar">
+                <div class="flex items-center gap-4">
+                    <span>Engine:</span>
                     <select id="mode-select">
-                        <option value="local">Local (LM Studio)</option>
-                        <option value="gemini">Cloud (Gemini 3 Flash)</option>
+                        <option value="gemini">Gemini 1.5 Flash (Cloud)</option>
+                        <option value="local">LM Studio (Local)</option>
                     </select>
                 </div>
-                <div class="flex gap-4">
-                    <span class="cursor-pointer hover:text-blue-500" onclick="resetKey()">Set API Key</span>
-                    <span id="connection-status">● LOCAL READY</span>
+                <div class="flex gap-6">
+                    <span class="cursor-pointer hover:text-green-500 transition-colors" onclick="resetKey()">[ CONFIG API KEY ]</span>
+                    <span id="connection-status" class="flex items-center gap-2">
+                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        SYSTEM READY
+                    </span>
                 </div>
             </div>
         </div>
@@ -83,13 +151,8 @@
 
     <script src="script.js"></script>
     <script>
-        const LOCAL_URL = "http://localhost:1020/v1/chat/completions";
-        const CLOUD_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash:generateContent";
-
-        function resetKey() {
-            const key = prompt("Gemini APIキーを入力してください");
-            if (key) localStorage.setItem("GEMINI_KEY", key);
-        }
+        const LOCAL_URL = "http://localhost:1234/v1/chat/completions";
+        const CLOUD_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
 
         async function handleSend() {
             const input = document.getElementById('user-input');
@@ -106,29 +169,28 @@
 
             try {
                 if (mode === "local") {
-                    // --- LM Studio への接続 ---
                     const res = await fetch(LOCAL_URL, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
                             messages: [{ role: "user", content: userText }],
-                            temperature: 0.7,
-                            max_tokens: 800
+                            temperature: 0.7
                         })
                     });
                     const data = await res.json();
                     aiLoading.textContent = data.choices[0].message.content;
                 } else {
-                    // --- Gemini への接続 ---
-                    const apiKey = localStorage.getItem("GEMINI_KEY");
-                    if (!apiKey) throw new Error("APIキーが設定されていません。");
+                    const apiKey = getApiKey();
+                    if (!apiKey) {
+                        aiLoading.innerHTML = `⚠️ APIキーが設定されていません。<br><span class="cursor-pointer underline" onclick="resetKey()">こちらから設定してください</span>`;
+                        throw new Error("API key missing");
+                    }
                     
                     const res = await fetch(`${CLOUD_URL}?key=${apiKey}`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
-                            contents: [{ parts: [{ text: userText }] }],
-                            generationConfig: { maxOutputTokens: 800 }
+                            contents: [{ parts: [{ text: `あなたはアドオン開発者「Neo」が運営するポータルサイトのサポートAIです。ユーザーの質問に簡潔かつ丁寧に答えてください。質問：${userText}` }] }]
                         })
                     });
                     const data = await res.json();
@@ -136,7 +198,9 @@
                     aiLoading.textContent = data.candidates[0].content.parts[0].text;
                 }
             } catch (err) {
-                aiLoading.textContent = "Error: " + err.message + "\n(ローカルモードの場合、LM StudioのServerが起動しているか確認してください)";
+                if (err.message !== "API key missing") {
+                    aiLoading.textContent = "Error: " + err.message + "\n(接続に失敗しました。設定を確認してください)";
+                }
             } finally {
                 btn.disabled = false;
                 window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
@@ -149,6 +213,11 @@
             div.className = `message ${className}`;
             div.textContent = text;
             display.appendChild(div);
+            
+            display.scrollTo({
+                top: display.scrollHeight,
+                behavior: 'smooth'
+            });
             return div;
         }
     </script>

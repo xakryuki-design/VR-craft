@@ -1,0 +1,26 @@
+{
+  "format_version": 2,
+  "header": {
+    "description": "Team Hat System by Neo",
+    "name": "Team Hat System",
+    "uuid": "e1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 21, 0]
+  },
+  "modules": [
+    {
+      "description": "Scripting Module",
+      "type": "script",
+      "language": "javascript",
+      "uuid": "f2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+      "version": [1, 0, 0],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "module_name": "@minecraft/server",
+      "version": "1.13.0"
+    }
+  ]
+}

@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI ASSISTANT | V-R-CRAFT</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <style>
         /* チャットエリア */
-        #chat-display { max-width: 900px; margin: 40px auto; display: flex; flex-direction: column; gap: 24px; padding: 0 20px 240px 20px; }
+        #chat-display { max-width: 900px; margin: 40px auto; display: flex; flex-direction: column; gap: 24px; padding: 0 20px 280px 20px; }
         
         .message { 
             padding: 1.25rem 1.75rem; 
@@ -18,9 +19,18 @@
             animation: message-pop 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
             line-height: 1.6; 
             word-wrap: break-word; 
-            white-space: pre-wrap;
             position: relative;
         }
+
+        /* Markdown Styles */
+        .message pre { background: rgba(0,0,0,0.1); padding: 1rem; border-radius: 1rem; margin: 1rem 0; overflow-x: auto; }
+        .dark .message pre { background: rgba(0,0,0,0.3); }
+        .message code { font-family: 'JetBrains Mono', monospace; font-size: 0.9em; background: rgba(0,0,0,0.05); padding: 0.2em 0.4em; border-radius: 0.4em; }
+        .dark .message code { background: rgba(255,255,255,0.1); }
+        .message pre code { background: none; padding: 0; }
+        .message ul, .message ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+        .message ul { list-style-type: disc; }
+        .message ol { list-style-type: decimal; }
 
         @keyframes message-pop { 
             from { opacity: 0; transform: translateY(20px) scale(0.95); } 
@@ -56,7 +66,7 @@
             position: fixed; bottom: 0; left: 0; right: 0; 
             background: rgba(255, 255, 255, 0.8); 
             backdrop-filter: blur(20px);
-            padding: 2rem; 
+            padding: 1.5rem 2rem 2.5rem; 
             border-top: 1px solid #f1f5f9; 
             z-index: 50; 
         }
@@ -84,6 +94,17 @@
         .dark .send-btn { background: white; color: #0f172a; }
         .send-btn:hover { background: var(--accent); color: white; transform: translateY(-2px); shadow: 0 10px 20px rgba(34, 197, 94, 0.3); }
         .send-btn:disabled { opacity: 0.5; transform: none; cursor: not-allowed; }
+
+        /* クイックプロンプト */
+        .quick-prompts { max-width: 900px; margin: 0 auto 1rem; display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
+        .quick-btn { 
+            white-space: nowrap; padding: 0.6rem 1.2rem; background: #f1f5f9; 
+            border-radius: 1rem; font-size: 11px; font-weight: 900; 
+            color: #64748b; transition: all 0.2s; border: 1px solid transparent;
+        }
+        .dark .quick-btn { background: #1e293b; color: #94a3b8; }
+        .quick-btn:hover { border-color: var(--accent); color: var(--accent); background: white; }
+        .dark .quick-btn:hover { background: #0f172a; }
 
         /* ステータスバー */
         .status-bar { 
@@ -126,6 +147,12 @@
         </div>
 
         <div class="input-area">
+            <div class="quick-prompts no-scrollbar">
+                <button class="quick-btn" onclick="quickPrompt('銃アドオンの作り方を教えて')">銃アドオンの作り方</button>
+                <button class="quick-btn" onclick="quickPrompt('Script APIの導入方法は？')">Script API導入</button>
+                <button class="quick-btn" onclick="quickPrompt('最新のアドオンは何？')">最新アドオン</button>
+                <button class="quick-btn" onclick="quickPrompt('エラーのデバッグ方法は？')">デバッグ方法</button>
+            </div>
             <div class="input-box">
                 <input type="text" id="user-input" placeholder="メッセージを入力..." onkeypress="if(event.key==='Enter') handleSend()">
                 <button id="send-btn" class="send-btn" onclick="handleSend()">Send</button>
@@ -138,7 +165,8 @@
                         <option value="local">LM Studio (Local)</option>
                     </select>
                 </div>
-                <div class="flex gap-6">
+                <div class="flex gap-6 items-center">
+                    <span class="cursor-pointer hover:text-red-500 transition-colors" onclick="clearChat()">[ CLEAR CHAT ]</span>
                     <span class="cursor-pointer hover:text-green-500 transition-colors" onclick="resetKey()">[ CONFIG API KEY ]</span>
                     <span id="connection-status" class="flex items-center gap-2">
                         <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
@@ -154,6 +182,18 @@
         const LOCAL_URL = "http://localhost:1234/v1/chat/completions";
         const CLOUD_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
 
+        function quickPrompt(text) {
+            document.getElementById('user-input').value = text;
+            handleSend();
+        }
+
+        function clearChat() {
+            if (confirm("チャット履歴をクリアしますか？")) {
+                const display = document.getElementById('chat-display');
+                display.innerHTML = '<div class="message ai-message">こんにちは。V-R-CRAFT AI アシスタントです。アドオン開発、Script API、導入方法などについてお手伝いします。</div>';
+            }
+        }
+
         async function handleSend() {
             const input = document.getElementById('user-input');
             const btn = document.getElementById('send-btn');
@@ -168,6 +208,7 @@
             const aiLoading = addMessage("Thinking...", 'ai-message');
 
             try {
+                let aiResponse = "";
                 if (mode === "local") {
                     const res = await fetch(LOCAL_URL, {
                         method: "POST",
@@ -178,7 +219,7 @@
                         })
                     });
                     const data = await res.json();
-                    aiLoading.textContent = data.choices[0].message.content;
+                    aiResponse = data.choices[0].message.content;
                 } else {
                     const apiKey = getApiKey();
                     if (!apiKey) {
@@ -195,8 +236,11 @@
                     });
                     const data = await res.json();
                     if (data.error) throw new Error(data.error.message);
-                    aiLoading.textContent = data.candidates[0].content.parts[0].text;
+                    aiResponse = data.candidates[0].content.parts[0].text;
                 }
+                
+                // Render with marked
+                aiLoading.innerHTML = marked.parse(aiResponse);
             } catch (err) {
                 if (err.message !== "API key missing") {
                     aiLoading.textContent = "Error: " + err.message + "\n(接続に失敗しました。設定を確認してください)";
@@ -211,7 +255,11 @@
             const display = document.getElementById('chat-display');
             const div = document.createElement('div');
             div.className = `message ${className}`;
-            div.textContent = text;
+            if (className === 'user-message') {
+                div.textContent = text;
+            } else {
+                div.innerHTML = text; // Initial loading state
+            }
             display.appendChild(div);
             
             display.scrollTo({

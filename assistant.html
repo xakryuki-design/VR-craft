@@ -180,7 +180,7 @@
     <script src="script.js"></script>
     <script>
         const LOCAL_URL = "http://localhost:1234/v1/chat/completions";
-        const CLOUD_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent";
+        const CLOUD_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:streamGenerateContent";
 
         function quickPrompt(text) {
             document.getElementById('user-input').value = text;
@@ -205,21 +205,44 @@
             btn.disabled = true;
             addMessage(userText, 'user-message');
             input.value = "";
-            const aiLoading = addMessage("Thinking...", 'ai-message');
+            const aiLoading = addMessage("", 'ai-message');
 
             try {
-                let aiResponse = "";
+                let fullResponse = "";
+                
                 if (mode === "local") {
                     const res = await fetch(LOCAL_URL, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
                             messages: [{ role: "user", content: userText }],
-                            temperature: 0.7
+                            temperature: 0.7,
+                            stream: true
                         })
                     });
-                    const data = await res.json();
-                    aiResponse = data.choices[0].message.content;
+                    
+                    const reader = res.body.getReader();
+                    const decoder = new TextDecoder();
+                    
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+                        
+                        const chunk = decoder.decode(value);
+                        const lines = chunk.split("\n");
+                        for (const line of lines) {
+                            if (line.startsWith("data: ")) {
+                                const dataStr = line.slice(6);
+                                if (dataStr === "[DONE]") break;
+                                try {
+                                    const data = JSON.parse(dataStr);
+                                    const content = data.choices[0].delta.content || "";
+                                    fullResponse += content;
+                                    aiLoading.innerHTML = marked.parse(fullResponse);
+                                } catch (e) {}
+                            }
+                        }
+                    }
                 } else {
                     const apiKey = getApiKey();
                     if (!apiKey) {
@@ -234,16 +257,56 @@
                             contents: [{ parts: [{ text: `あなたはアドオン開発者「Neo」が運営するポータルサイトのサポートAIです。ユーザーの質問に簡潔かつ丁寧に答えてください。質問：${userText}` }] }]
                         })
                     });
-                    const data = await res.json();
-                    if (data.error) throw new Error(data.error.message);
-                    aiResponse = data.candidates[0].content.parts[0].text;
+
+                    if (!res.ok) {
+                        const errData = await res.json();
+                        throw new Error(errData.error?.message || "Connection failed");
+                    }
+
+                    const reader = res.body.getReader();
+                    const decoder = new TextDecoder();
+                    let buffer = "";
+
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+                        
+                        buffer += decoder.decode(value, { stream: true });
+                        
+                        let startIdx = buffer.indexOf('{"candidates"');
+                        while (startIdx !== -1) {
+                            let braceCount = 0;
+                            let endIdx = -1;
+                            for (let i = startIdx; i < buffer.length; i++) {
+                                if (buffer[i] === '{') braceCount++;
+                                else if (buffer[i] === '}') {
+                                    braceCount--;
+                                    if (braceCount === 0) {
+                                        endIdx = i;
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            if (endIdx !== -1) {
+                                const jsonStr = buffer.substring(startIdx, endIdx + 1);
+                                try {
+                                    const data = JSON.parse(jsonStr);
+                                    const textChunk = data.candidates[0].content.parts[0].text;
+                                    fullResponse += textChunk;
+                                    aiLoading.innerHTML = marked.parse(fullResponse);
+                                } catch (e) {}
+                                buffer = buffer.substring(endIdx + 1);
+                                startIdx = buffer.indexOf('{"candidates"');
+                            } else {
+                                break;
+                            }
+                        }
+                    }
                 }
-                
-                // Render with marked
-                aiLoading.innerHTML = marked.parse(aiResponse);
             } catch (err) {
                 if (err.message !== "API key missing") {
-                    aiLoading.textContent = "Error: " + err.message + "\n(接続に失敗しました。設定を確認してください)";
+                    aiLoading.innerHTML = `<span class="text-red-500">Error: ${err.message}</span>`;
                 }
             } finally {
                 btn.disabled = false;
@@ -258,7 +321,7 @@
             if (className === 'user-message') {
                 div.textContent = text;
             } else {
-                div.innerHTML = text; // Initial loading state
+                div.innerHTML = text;
             }
             display.appendChild(div);
             
